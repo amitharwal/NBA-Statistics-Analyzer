@@ -1,5 +1,12 @@
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.geometry.Pos;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,24 +14,22 @@ import java.util.stream.Collectors;
 public class DashboardController {
     @FXML private TextField searchField, compareField1, compareField2;
     @FXML private ComboBox<String> sortDropdown;
-    @FXML private TextArea resultArea;
+    @FXML private VBox resultContainer;
 
-    private boolean darkMode = false;
     private List<Player> allPlayers;
 
     @FXML
     public void initialize() {
-        System.out.println("✅ DashboardController initialized.");
-        // Load CSV from resources
         var inputStream = getClass().getResourceAsStream("/all_seasons.csv");
         if (inputStream == null) {
-            resultArea.setText("❌ CSV not found in resources!");
+            Label errorLabel = new Label("❌ CSV not found!");
+            resultContainer.getChildren().add(errorLabel);
             return;
         }
 
         CSVImporter importer = new CSVImporter(inputStream);
         allPlayers = importer.readAllData();
-        System.out.println("✔ Loaded " + allPlayers.size() + " players.");
+        System.out.println("Loaded " + allPlayers.size() + " players.");
 
         sortDropdown.getItems().addAll("Sort by", "Points", "Rebounds", "Assists");
         sortDropdown.getSelectionModel().selectFirst();
@@ -38,50 +43,39 @@ public class DashboardController {
 
     @FXML
     public void handleCompare() {
+        resultContainer.getChildren().clear();
+
         String name1 = compareField1.getText().trim().toLowerCase();
         String name2 = compareField2.getText().trim().toLowerCase();
 
         Player p1 = findTopPlayer(name1);
         Player p2 = findTopPlayer(name2);
         if (p1 == null || p2 == null) {
-            resultArea.setText("⚠ One or both players not found.");
+            resultContainer.getChildren().add(new Label("⚠ One or both players not found."));
             return;
         }
 
-        resultArea.setText("📊 Player Comparison\n\n");
-        resultArea.appendText(String.format("%-25s Season: %-8s | Team: %-4s\n",
-                p1.getName(), p1.getSeason(), p1.getTeam()));
-        resultArea.appendText(String.format("PPG: %-5.1f | RPG: %-5.1f | APG: %-5.1f\n\n",
-                p1.getStats().get("Points"),
-                p1.getStats().get("Rebounds"),
-                p1.getStats().get("Assists")));
+        resultContainer.getChildren().add(new Label("📊 Player Comparison"));
 
-        resultArea.appendText(String.format("%-25s Season: %-8s | Team: %-4s\n",
-                p2.getName(), p2.getSeason(), p2.getTeam()));
-        resultArea.appendText(String.format("PPG: %-5.1f | RPG: %-5.1f | APG: %-5.1f\n\n",
-                p2.getStats().get("Points"),
-                p2.getStats().get("Rebounds"),
-                p2.getStats().get("Assists")));
+        resultContainer.getChildren().add(createPlayerStatsBox(p1));
+        resultContainer.getChildren().add(createPlayerStatsBox(p2));
 
-        resultArea.appendText("🏆 Stat Leaders:\n");
-        resultArea.appendText("PPG: " + compareStat(p1, p2, "Points") + "\n");
-        resultArea.appendText("RPG: " + compareStat(p1, p2, "Rebounds") + "\n");
-        resultArea.appendText("APG: " + compareStat(p1, p2, "Assists") + "\n");
+        Label title = new Label("🏆 Stat Leaders:");
+        title.getStyleClass().add("section-title");
+        resultContainer.getChildren().add(title);
+
+        resultContainer.getChildren().add(new Label("PPG: " + compareStat(p1, p2, "Points")));
+        resultContainer.getChildren().add(new Label("RPG: " + compareStat(p1, p2, "Rebounds")));
+        resultContainer.getChildren().add(new Label("APG: " + compareStat(p1, p2, "Assists")));
 
         compareField1.clear();
         compareField2.clear();
     }
 
     @FXML
-    public void handleToggleTheme() {
-        darkMode = !darkMode;
-        String bg = darkMode ? "#1e1e1e" : "#ffffff";
-        String fg = darkMode ? "#ffffff" : "#000000";
-        resultArea.setStyle(String.format(
-                "-fx-control-inner-background: %s; -fx-text-fill: %s;", bg, fg));
-    }
-
     private void updateResults() {
+        resultContainer.getChildren().clear();
+
         String query = searchField.getText().trim().toLowerCase();
         String sortOption = sortDropdown.getSelectionModel().getSelectedItem();
 
@@ -92,27 +86,38 @@ public class DashboardController {
 
         if (sortOption != null) {
             switch (sortOption) {
-                case "Points"   -> filtered.sort(Comparator.comparingDouble(p -> -p.getStats().getOrDefault("Points", 0.0)));
+                case "Points" -> filtered.sort(Comparator.comparingDouble(p -> -p.getStats().getOrDefault("Points", 0.0)));
                 case "Rebounds" -> filtered.sort(Comparator.comparingDouble(p -> -p.getStats().getOrDefault("Rebounds", 0.0)));
-                case "Assists"  -> filtered.sort(Comparator.comparingDouble(p -> -p.getStats().getOrDefault("Assists", 0.0)));
+                case "Assists" -> filtered.sort(Comparator.comparingDouble(p -> -p.getStats().getOrDefault("Assists", 0.0)));
             }
         }
 
         if (filtered.isEmpty()) {
-            resultArea.setText("😕 No matching players found.");
+            resultContainer.getChildren().add(new Label("😕 No matching players found."));
         } else {
-            resultArea.setText(String.format("%-25s %-10s %-6s %-6s %-6s\n",
-                    "Name", "Season", "PPG", "RPG", "APG"));
-            resultArea.appendText("=".repeat(65) + "\n");
             for (int i = 0; i < Math.min(filtered.size(), 100); i++) {
                 Player p = filtered.get(i);
-                resultArea.appendText(String.format("%-25s %-10s %-6.1f %-6.1f %-6.1f\n",
-                        p.getName(), p.getSeason(),
-                        p.getStats().getOrDefault("Points", 0.0),
-                        p.getStats().getOrDefault("Rebounds", 0.0),
-                        p.getStats().getOrDefault("Assists", 0.0)));
+                resultContainer.getChildren().add(createPlayerStatsBox(p));
             }
         }
+    }
+
+    private VBox createPlayerStatsBox(Player p) {
+        VBox box = new VBox(5);
+        box.getStyleClass().add("player-box");
+        box.setAlignment(Pos.CENTER_LEFT);
+
+        Label name = new Label(p.getName() + " — " + p.getSeason() + " | " + p.getTeam());
+        name.getStyleClass().add("player-name");
+
+        Label stats = new Label(String.format("PPG: %.1f   RPG: %.1f   APG: %.1f",
+                p.getStats().getOrDefault("Points", 0.0),
+                p.getStats().getOrDefault("Rebounds", 0.0),
+                p.getStats().getOrDefault("Assists", 0.0)));
+        stats.getStyleClass().add("player-stats");
+
+        box.getChildren().addAll(name, stats);
+        return box;
     }
 
     private Player findTopPlayer(String nameQuery) {
@@ -129,12 +134,18 @@ public class DashboardController {
     }
 
     private void showWelcomeMessage() {
-        resultArea.setText(
-                "🏀 Welcome to the NBA Statistics Analyzer!\n\n" +
-                        "→ Search by player name or team\n" +
-                        "→ Use sort dropdown to rank players by stats\n" +
-                        "→ Use the bottom panel to compare players side-by-side\n\n" +
-                        "Click 'Apply' to get started!"
-        );
+        resultContainer.getChildren().clear();
+        Label welcome = new Label("""
+            🏀 Welcome to the NBA Statistics Analyzer!
+
+            → Search by player name or team
+            → Use sort dropdown to rank players by stats
+            → Use the bottom panel to compare players side-by-side
+
+            Click 'Apply' to get started!
+        """);
+        welcome.setWrapText(true);
+        welcome.setStyle("-fx-font-size: 15px; -fx-padding: 15;");
+        resultContainer.getChildren().add(welcome);
     }
 }
