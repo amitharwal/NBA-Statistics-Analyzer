@@ -22,7 +22,7 @@ public class Main extends Application {
             }
 
             stage.setTitle("NBA Statistics Analyzer");
-            // stage.getIcons().add(new Image("https://cdn.nba.com/manage/2021/10/nba-logo-1.png"));
+            stage.getIcons().add(new Image("https://d1csarkz8obe9u.cloudfront.net/posterpreviews/nba-logo-design-template-84ea26dc6256bc0ceed9603b95ba6ab9_screen.jpg?ts=1684801676"));
 
             stage.setScene(scene);
             stage.show();
