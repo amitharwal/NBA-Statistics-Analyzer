@@ -15,14 +15,20 @@
                 <TextField fx:id="searchField" promptText="Search by player or team" prefWidth="200"/>
                 <ComboBox fx:id="sortDropdown" prefWidth="150"/>
                 <Button text="Apply" onAction="#handleApply"/>
-                <Button text="🌙 Theme" onAction="#handleToggleTheme"/>
             </HBox>
         </VBox>
     </top>
 
     <center>
-        <TextArea fx:id="resultArea" wrapText="false" editable="false"
-                  style="-fx-font-family: 'Consolas'; -fx-font-size: 13px;" />
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <content>
+                <VBox fx:id="resultContainer" spacing="8" alignment="TOP_CENTER">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
     </center>
 
     <bottom>
