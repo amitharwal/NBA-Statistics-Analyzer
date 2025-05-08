@@ -3,43 +3,27 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="DashboardController">
-    <top>
-        <VBox spacing="10">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="🔍 Search:"/>
-                <TextField fx:id="searchField" promptText="Search by player or team" prefWidth="200"/>
-                <ComboBox fx:id="sortDropdown" prefWidth="150"/>
-                <Button text="Apply" onAction="#handleApply"/>
-            </HBox>
-        </VBox>
-    </top>
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="DashboardController"
+            prefWidth="1000" prefHeight="700">
 
-    <center>
-        <ScrollPane fitToWidth="true" fitToHeight="true">
-            <content>
-                <VBox fx:id="resultContainer" spacing="8" alignment="TOP_CENTER">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15"/>
-                    </padding>
-                </VBox>
-            </content>
-        </ScrollPane>
-    </center>
-
-    <bottom>
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <Label text="Compare:"/>
-            <TextField fx:id="compareField1" promptText="Player 1" prefWidth="150"/>
-            <TextField fx:id="compareField2" promptText="Player 2" prefWidth="150"/>
-            <Button text="Compare" onAction="#handleCompare"/>
+    <VBox spacing="12" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="30">
+        <HBox spacing="10">
+            <TextField fx:id="searchField" promptText="Search player or team..." />
+            <ComboBox fx:id="sortDropdown" promptText="Sort by stat..." />
+            <Button text="Apply" onAction="#handleApply" />
         </HBox>
-    </bottom>
-</BorderPane>
+        <HBox spacing="10">
+            <TextField fx:id="compareField1" promptText="Compare Player 1" />
+            <TextField fx:id="compareField2" promptText="Compare Player 2" />
+            <Button text="Compare" onAction="#handleCompare" />
+        </HBox>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <VBox fx:id="resultContainer" spacing="10">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>
