@@ -1,34 +1,55 @@
 .root {
     -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    -fx-background-color: linear-gradient(to bottom, #f7f8fa, #e2e6ea);
+    -fx-background-color: linear-gradient(to bottom, #fdfdfd, #ebeff3);
+}
+
+.label {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 13px;
 }
 
 .text-field, .combo-box, .button {
     -fx-background-radius: 8;
     -fx-border-radius: 8;
+    -fx-padding: 8 14 8 14;
     -fx-font-size: 13px;
-    -fx-padding: 6 12 6 12;
+}
+
+.text-field, .combo-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d0d7de;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.06), 4, 0, 0, 1);
 }
 
 .button {
     -fx-background-color: linear-gradient(to right, #00c6ff, #0072ff);
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
 }
 
 .button:hover {
     -fx-background-color: linear-gradient(to right, #0072ff, #00c6ff);
 }
 
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+#resultContainer {
+    -fx-padding: 20;
+}
+
 .player-box {
     -fx-background-color: white;
-    -fx-border-color: #ccc;
+    -fx-border-color: #e0e0e0;
     -fx-border-radius: 10;
     -fx-background-radius: 10;
-    -fx-padding: 15;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2);
-    -fx-font-size: 14px;
-    -fx-spacing: 5;
+    -fx-padding: 16;
+    -fx-spacing: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.06), 6, 0, 0, 2);
 }
 
 .player-name {
@@ -38,5 +59,6 @@
 }
 
 .player-stats {
+    -fx-font-size: 13px;
     -fx-text-fill: #34495e;
 }
