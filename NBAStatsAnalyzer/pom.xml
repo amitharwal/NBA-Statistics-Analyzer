@@ -14,7 +14,6 @@
     </properties>
 
     <dependencies>
-        <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -25,17 +24,10 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-        <!-- (Optional) CSV library if you prefer; not used below -->
-        <!-- <dependency>
-          <groupId>com.opencsv</groupId>
-          <artifactId>opencsv</artifactId>
-          <version>5.7.1</version>
-        </dependency> -->
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Compile with Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -46,7 +38,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Exec plugin to launch JavaFX -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
