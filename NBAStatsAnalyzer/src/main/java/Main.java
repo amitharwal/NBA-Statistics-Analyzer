@@ -23,7 +23,6 @@ public class Main extends Application {
 
             stage.setTitle("NBA Statistics Analyzer");
             stage.getIcons().add(new Image("https://d1csarkz8obe9u.cloudfront.net/posterpreviews/nba-logo-design-template-84ea26dc6256bc0ceed9603b95ba6ab9_screen.jpg?ts=1684801676"));
-
             stage.setScene(scene);
             stage.show();
 
@@ -31,7 +30,6 @@ public class Main extends Application {
             ft.setFromValue(0);
             ft.setToValue(1);
             ft.play();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
