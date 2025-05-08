@@ -14,10 +14,17 @@ public class CSVImporter {
 
     public List<Player> readAllData() {
         List<Player> players = new ArrayList<>();
+        int totalRows = 0;
+        int malformedRows = 0;
+        int missingFieldRows = 0;
+
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(csvStream, StandardCharsets.UTF_8))) {
             String headerLine = reader.readLine();
-            if (headerLine == null) return players;
+            if (headerLine == null) {
+                System.err.println("CSVImporter: Empty CSV file.");
+                return players;
+            }
 
             String[] headers = headerLine.split(",", -1);
             Map<String, Integer> idx = new HashMap<>();
@@ -37,22 +44,28 @@ public class CSVImporter {
                 if ((h.equals("ast") || h.contains("ast")) && !idx.containsKey("assists"))
                     idx.put("assists", i);
             }
-            // Ensure we found all columns
-            if (!idx.keySet().containsAll(Set.of(
-                    "season", "player", "team", "points", "rebounds", "assists"))) {
-                System.err.println("❌ CSVImporter: missing columns, found " + idx.keySet());
+
+            if (!idx.keySet().containsAll(Set.of("season", "player", "team", "points", "rebounds", "assists"))) {
+                System.err.println("CSVImporter: Missing required columns. Found only: " + idx.keySet());
                 return players;
             }
 
             String line;
             while ((line = reader.readLine()) != null) {
+                totalRows++;
                 String[] vals = line.split(",", -1);
-                if (vals.length < headers.length) continue;
+                if (vals.length < headers.length) {
+                    malformedRows++;
+                    continue;
+                }
 
                 String season = vals[idx.get("season")].trim();
                 String name   = vals[idx.get("player")].trim();
                 String team   = vals[idx.get("team")].trim();
-                if (season.isEmpty() || name.isEmpty()) continue;
+                if (season.isEmpty() || name.isEmpty()) {
+                    missingFieldRows++;
+                    continue;
+                }
 
                 Player p = new Player(name, season, team);
                 try {
@@ -63,11 +76,17 @@ public class CSVImporter {
                     p.setStat("Rebounds", reb);
                     p.setStat("Assists", ast);
                 } catch (NumberFormatException ex) {
-                    continue; // skip rows with malformed numbers
+                    malformedRows++;
+                    continue;
                 }
                 players.add(p);
             }
+
+            System.out.printf("CSVImporter: Read %d rows. Parsed %d players. Skipped %d malformed, %d missing-field rows.%n",
+                    totalRows, players.size(), malformedRows, missingFieldRows);
+
         } catch (IOException e) {
+            System.err.println("CSVImporter: Error reading CSV file.");
             e.printStackTrace();
         }
         return players;
