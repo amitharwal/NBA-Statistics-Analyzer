@@ -11,6 +11,19 @@ We built this Java-based application to search for and compare NBA players and t
 ## Dependencies
 All dependencies are listed in the pom.xml file.
 
+## Building and Running
+This project is built with Maven and requires Java 17 or higher.
+
+```bash
+# Compile the project and run tests
+mvn test
+
+# Launch the JavaFX application
+mvn exec:java -Dpath.to.fx=/path/to/javafx-sdk/lib
+```
+
+Replace `/path/to/javafx-sdk/lib` with the location of your JavaFX SDK.
+
 ## Features (Mostly Explained in Description)
 - **NBA Player Sort**
 - **JavaFx Framework**
